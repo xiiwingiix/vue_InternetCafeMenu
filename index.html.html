@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Transition Vue</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+    <link rel="stylesheet" type="text/css" href="./transitionVue.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js"></script>
+</head>
+<body>
+    <div id="container">
+        <header class="header">
+            <h1 class="header__title">상품주문</h1>
+        </header>
+        <main>
+            <div class="notice">
+                <p>주말 오후 집에 있긴 싫어서 무작정 밖을 뛰쳐나왔다. 하지만 반기는 건 수많은 미세먼지들뿐, 안되겠다 싶어 바로 앞 PC방을 들어가 자리에 앉고 컴퓨터를 켜는 순간 배고픔이 몰려왔다.<br>
+                    일단 배부터 채워야겠다는 마음에 메뉴판을 열어보았는데 아무리 상품을 클릭해도 주문이 안된다!!<br>
+                    다행히 이럴 때를 대비해서 나는 VueJS를 배워놨다. 어서 메뉴판을 완성해서 허기진 내 배를 채울 수 있게 하자!
+                </p>
+            </div>
+            <!-- 즐겨찾는 상품 영역 시작 -->
+            <section class="order-favorite">
+                <ul class="order-list">
+                    <!-- 상단 상품 목록 시작 -->
+                    <template 
+                        v-for="(item, index) in productItemList"
+                        :key="index">
+                        <li class="order-item" v-if="item.favorite == true">
+                            <div class="order-item__image"><img src="https://via.placeholder.com/150/image"></div>
+                            <label class="order-item__label">
+                                <p class="order-item__name">{{item.name}}</p>
+                                <p class="order-item__price"> {{item.price | price}}</p>
+                            </label>
+                        </li>
+                    </template>
+
+                    <!-- 상단 상품 목록 끝-->
+                </ul>
+            </section>
+            <!-- //즐겨찾는 상품 영역 끝 -->
+
+            <!-- 상품 분류 탭 영역 시작 -->
+            <section class="order-tab">
+                <ul class="order-tab__list">
+                    <li 
+                        v-for="(item, index) in productTypeList"
+                        @click="type_click(item)"
+                        :key="index"
+                        class="order-tab__item" 
+                        :class="productTypeActive == item ? 'active' : ''">
+                        <button class="order-tab__text">{{item}}</button>
+                    </li>
+                </ul>
+            </section>
+            <!-- //상품 분류 탭 영역 끝 -->
+
+            <!-- 일반 상품 목록 시작 -->
+            <section class="order-normal">
+                <ul class="order-list">
+                    <!-- 상단 상품 목록 시작 -->
+                    <li v-for="(item, index) in productItemList" 
+                        v-if="productTypeActive == item.type || productTypeActive == '전체'"  
+                        class="order-item" 
+                        :key="index">
+                        <div class="order-item__image"><img src="https://via.placeholder.com/75/image"></div>
+                        <label class="order-item__label">
+                            <p class="order-item__name">{{item.name}}</p>
+                            <p class="order-item__price">{{item.price | price }}</p>
+                        </label>
+                    </li>
+                    <!-- 상단 상품 목록 끝-->
+                </ul>
+            </section>
+            <!-- //일반 상품 목록 끝 -->
+
+            <!-- 장바구니 영역 시작 -->
+            <section class="cart">
+                <div class="cart-title">
+                    <h1>주문목록</h1>
+                </div>
+                <ul class="cart-list">
+                    <!-- 카트 상품 정보 리스트 시작 -->
+                    <li class="cart-item" style="display:none">
+                        <span>방울토마토 0개</span>
+                    </li>
+                    <!-- 카트 상품 정보 리스트 끝 -->
+                    <!-- 카트 상품 없을 시 시작 -->
+                    <li class="cart-item--empty">상품을 선택해 주세요.</li>
+                    <!-- 카트 상품 없을 시 끝 -->
+                </ul>
+                <div class="cart-total">
+                    <span class="cart-total__label">전체주문금액</span>
+                    <span class="cart-total__value">0원</span>
+                </div>
+                <div class="cart-actions">
+                    <div class="cart-actions__paytype">
+                        <label class="radio">
+                            <input type="radio" name="paytype" class="radio__inner" checked/>
+                            <span class="radio__text">현금결제 (5% 할인)</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="paytype" class="radio__inner" />
+                            <span class="radio__text" >카드결제</span>
+                        </labe>
+                    </div>
+                    <button class="cart-actions__button">상품주문</button>
+                </div>
+            </section>
+            <!-- //장바구니 영역 끝 -->
+        </main>
+    </div>
+
+<script>
+new Vue({
+    el: '#container',
+    data: function(){
+        return {
+            productTypeActive: '전체', // 선택한 상품 분류
+            productTypeList: ['전체','간식','식사','라면','음료'],
+            productItemList: [ // 상품목록
+                { name: '피자리아 존맛탱', price: '2000', type: '간식', image: '', favorite: true },
+                { name: '깔라만시 곤약젤리', price: '2000', type: '간식', image: '', favorite: true },
+                { name: '눈꽃크림 떡볶이', price: '3000', type: '식사', image: '', favorite: true },
+                { name: '닭꼬치', price: '2000', type: '간식', image: '', favorite: true },
+                { name: '마늘후랑크', price: '2000', type: '간식', image: '', favorite: true },
+                { name: '매콤달콤 떡볶이', price: '2000', type: '식사', image: '', favorite: false },
+                { name: '복숭아 곤약젤리', price: '1500', type: '간식', image: '', favorite: false },
+                { name: '불벅', price: '1500', type: '간식', image: '', favorite: false },
+                { name: '치킨너겟 5조각', price: '1500', type: '간식', image: '', favorite: false },
+                { name: '너구리', price: '2000', type: '라면', image: '', favorite: false },
+                { name: '짜치계', price: '3000', type: '라면', image: '', favorite: false },
+                { name: '마운틴듀', price: '1500', type: '음료', image: '', favorite: false },
+                { name: '닥터페퍼', price: '1500', type: '음료', image: '', favorite: false },
+            ],
+            orderList: [],
+            payType: 'cash',
+        }
+    },
+    filters: {
+        price: function(value){
+            var display = value;
+            if( false === isNaN(parseInt(value)) ) {
+                display = String(value).replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+            }
+            return display
+        }
+    },
+    methods :{
+        type_click : function(type){
+            console.log(type)
+            this.productTypeActive = type 
+            this.$forceUpdate()
+        }
+    }, 
+    watch:{
+        'productItemList':{
+            deep:true,
+            handler:(after, before)=>{
+                console.log()
+            }
+        }
+    },
+    computed:{
+        favoriteItemList : function(){
+            return this.productItemList.filters(item=>(item.favorite === true))
+        }
+    }
+    
+})
+</script>
+</body>
+</html>
