@@ -36,7 +36,7 @@
                             <div class="order-item__image"><img src="https://via.placeholder.com/150/image"></div>
                             <label class="order-item__label">
                                 <p class="order-item__name">{{item.name}}</p>
-                                <p class="order-item__price"> {{item.price | price}}</p>
+                                <p class="order-item__price"> {{item.price | price}}원</p>
                             </label>
                         </li>
                     </template>
@@ -72,7 +72,7 @@
                         <div class="order-item__image"><img src="https://via.placeholder.com/75/image"></div>
                         <label class="order-item__label">
                             <p class="order-item__name">{{item.name}}</p>
-                            <p class="order-item__price">{{item.price | price }}</p>
+                            <p class="order-item__price">{{item.price | price }}원</p>
                         </label>
                     </li>
                     <!-- 상단 상품 목록 끝-->
@@ -157,12 +157,11 @@ new Vue({
                 { name: '불벅', price: '1500', type: '간식', image: '', favorite: false },
                 { name: '치킨너겟 5조각', price: '1500', type: '간식', image: '', favorite: false },
                 { name: '너구리', price: '2000', type: '라면', image: '', favorite: false },
-                { name: '짜치계', price: '3000', type: '라면', image: '', favorite: false },
+                { name: '짜계치', price: '3000', type: '라면', image: '', favorite: false },
                 { name: '마운틴듀', price: '1500', type: '음료', image: '', favorite: false },
                 { name: '닥터페퍼', price: '1500', type: '음료', image: '', favorite: false },
             ],
             orderList: [],
-            orderListState : false,
             payType: 'cash',
             totalPrice : parseInt(0)
         }
@@ -195,9 +194,6 @@ new Vue({
                 var product = {'name': name, 'price':price, 'cnt':1, 'calcPrice':''}
                 product.calcPrice = product.price * product.cnt;
                 this.orderList.push(product);
-                if (this.orderList.length > 0){
-                    this.orderListState = true
-                }
             }
             //전체 주문 금액
             this.totalPrice += parseInt(price);
