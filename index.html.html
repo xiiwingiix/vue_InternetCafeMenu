@@ -28,7 +28,11 @@
                     <template 
                         v-for="(item, index) in productItemList"
                         :key="index">
-                        <li class="order-item" v-if="item.favorite == true">
+                        <li 
+                            v-if="item.favorite == true"
+                            @click="product_click(item.name, item.price)"
+                            class="order-item" 
+                            >
                             <div class="order-item__image"><img src="https://via.placeholder.com/150/image"></div>
                             <label class="order-item__label">
                                 <p class="order-item__name">{{item.name}}</p>
@@ -101,20 +105,34 @@
                 </ul>
                 <div class="cart-total">
                     <span class="cart-total__label">전체주문금액</span>
-                    <span class="cart-total__value">{{this.totalPrice}}원</span>
+                    <span class="cart-total__value">{{this.totalPrice | price}}원</span>
                 </div>
                 <div class="cart-actions">
                     <div class="cart-actions__paytype">
                         <label class="radio">
-                            <input type="radio" name="paytype" class="radio__inner" checked/>
+                            <input 
+                                v-model="payType"
+                                value="cash"
+                                type="radio" 
+                                name="paytype" 
+                                class="radio__inner" 
+                                />
                             <span class="radio__text">현금결제 (5% 할인)</span>
                         </label>
                         <label class="radio">
-                            <input type="radio" name="paytype" class="radio__inner" />
+                            <input 
+                                v-model="payType"
+                                value="card"
+                                type="radio" 
+                                name="paytype" 
+                                class="radio__inner" />
                             <span class="radio__text" >카드결제</span>
                         </labe>
                     </div>
-                    <button class="cart-actions__button">상품주문</button>
+                    <button
+                        @click="order_click(payType)" 
+                        class="cart-actions__button">상품주문</button
+                        >
                 </div>
             </section>
             <!-- //장바구니 영역 끝 -->
@@ -146,7 +164,7 @@ new Vue({
             orderList: [],
             orderListState : false,
             payType: 'cash',
-            totalPrice : 0
+            totalPrice : parseInt(0)
         }
     },
     filters: {
@@ -181,21 +199,37 @@ new Vue({
                     this.orderListState = true
                 }
             }
-        }
-    }, 
-    watch:{
-        'productItemList':{
-            deep:true,
-            handler:(after, before)=>{
-                console.log()
+            //전체 주문 금액
+            this.totalPrice += parseInt(price);
+        },
+
+        // 주문 하기
+        order_click : function(payType){
+            if(this.totalPrice == 0){
+                alert('상품을 선택해 주세요')
+                return false;
+            }
+
+            if(payType == 'cash'){
+                alert('현금 결제 시 5% 할인이 적용되었습니다. 총 상품 금액은'+this.totalPrice+'원, 할인 적용된 금액은'+parseInt(this.totalPrice*0.95)+'원 입니다.')
+            }else {
+                alert('카드 결제 시 총 상품 금액은'+this.totalPrice+'원 입니다.')
             }
         }
-    },
-    computed:{
-        favoriteItemList : function(){
-            return this.productItemList.filters(item=>(item.favorite === true))
-        }
-    }
+    }, 
+    // watch:{
+    //     'productItemList':{
+    //         deep:true,
+    //         handler:(after, before)=>{
+    //             console.log()
+    //         }
+    //     }
+    // },
+    // computed:{
+    //     favoriteItemList : function(){
+    //         return this.productItemList.filters(item=>(item.favorite === true))
+    //     }
+    // }
     
 })
 </script>
