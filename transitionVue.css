@@ -165,6 +165,9 @@ main {
         padding: 5px 8px;
         background: #ffffff;
     }
+    .cart-list .right{
+        float: right;
+    }
     .cart-item {
         color: #222;
     }
